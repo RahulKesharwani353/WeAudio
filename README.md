@@ -5,7 +5,7 @@
 - [x] Auth Service
 - [x] Upload  Service
 - [x] RMQ
-- [ ] Notification Service
+- [x] Notification Service
 - [ ] Download Service
 - [ ] GateWay Service
 - [ ] Frontend
