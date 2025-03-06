@@ -4,6 +4,9 @@ from fastapi.security import HTTPBearer, OAuth2PasswordBearer, OAuth2PasswordReq
 from fastapi.openapi.utils import get_openapi
 from utils import upload
 
+from dotenv import load_dotenv
+load_dotenv()
+
 app=FastAPI(
         title="User Management API",
     description="API for user registration and management",

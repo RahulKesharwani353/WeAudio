@@ -3,6 +3,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from pymongo import MongoClient
 from gridfs import GridFS
 from motor.motor_asyncio import AsyncIOMotorGridFSBucket
+from dotenv import load_dotenv
+load_dotenv()
 
 
 MONGO_URI = os.environ.get('MONGO_CONNECTION_STRING')
@@ -14,7 +16,7 @@ def get_sync_client():
 
 def get_sync_db():
     client = get_sync_client()
-    return client[DATABASE_NAME]
+    return client.VIDEO_DB
 
 def get_sync_gridfs():
     db = get_sync_db()

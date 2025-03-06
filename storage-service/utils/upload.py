@@ -1,5 +1,5 @@
 from fastapi import Depends
-from client.mongoClient import get_async_gridfs
+from client.mongoClient import get_async_gridfs, get_sync_db
 import io
 from datetime import datetime
 
@@ -7,7 +7,7 @@ async def upload(f):
     fs = await get_async_gridfs()
     try:
         fid = await fs.upload_from_stream(
-            filename="sdsdsds",
+            filename=f.name,
             source=io.BytesIO(f),
             metadata={
                 "content_type": "video/mp4",
