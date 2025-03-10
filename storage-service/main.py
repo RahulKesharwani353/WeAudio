@@ -42,4 +42,13 @@ async def upload_video(
     
     return response
 
+@router.get('/download/{file_id}')
+async def download_audio(file_id: str):
+    """
+    ## Download the converted audio file
+    """
+    
+    # return FileResponse(file_path, media_type='audio/mpeg', filename=f"{file_id}.mp3")
+    return {"message": "Download the audio file"}
+
 app.include_router(router)
