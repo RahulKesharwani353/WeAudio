@@ -10,19 +10,6 @@ load_dotenv()
 MONGO_URI = os.environ.get('MONGO_CONNECTION_STRING')
 DATABASE_NAME = "VIDEO_DB"
 
-# Synchronous client (for use outside of FastAPI routes)
-def get_sync_client():
-    return MongoClient(MONGO_URI)
-
-def get_sync_db():
-    client = get_sync_client()
-    return client.VIDEO_DB
-
-def get_sync_gridfs():
-    db = get_sync_db()
-    return GridFS(db)
-
-# Asynchronous client (for use within FastAPI routes)
 async def get_async_client():
     return AsyncIOMotorClient(MONGO_URI)
 

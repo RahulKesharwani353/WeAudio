@@ -47,6 +47,9 @@ async def download_audio(file_id: str):
     """
     ## Download the converted audio file
     """
+
+    out = fs_mp3s.get(ObjectId(fid_string))
+    return send_file(out, download_name=f"{fid_string}.mp3")
     
     # return FileResponse(file_path, media_type='audio/mpeg', filename=f"{file_id}.mp3")
     return {"message": "Download the audio file"}
