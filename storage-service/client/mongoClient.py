@@ -13,11 +13,11 @@ DATABASE_NAME = "VIDEO_DB"
 async def get_async_client():
     return AsyncIOMotorClient(MONGO_URI)
 
-async def get_async_db():
+async def get_async_db(DB_NAME: str):
     client = await get_async_client()
-    return client[DATABASE_NAME]
+    return client[DB_NAME]
 
-async def get_async_gridfs():
-    db = await get_async_db()
+async def get_async_gridfs(DB_NAME: str):
+    db = await get_async_db(DB_NAME)
     # Use AsyncIOMotorGridFSBucket which is designed for Motor
     return AsyncIOMotorGridFSBucket(db)

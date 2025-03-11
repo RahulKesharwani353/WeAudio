@@ -1,37 +1,45 @@
-from moviepy.video.io.VideoFileClip import VideoFileClip
-import os
+import os, json, tempfile
+from utils.audioConvertor import extract_audio_from_video
+from client.rabbitMQClient import consume_messages
+from utils.download import download
+from utils.upload import upload
 
-def extract_audio_from_video(video_path):
-    try:
-        # Create a VideoFileClip object - using direct import
-        print(f"Processing video: {video_path}")
-        video = VideoFileClip(video_path)
-        
-        # Get the audio from the video
-        audio = video.audio
-        
-        if audio is None:
-            print("No audio stream found in the video file.")
-            return None, None
-   
-        return audio, video  # Return both audio and video so we can close video later
-    except Exception as e:
-        print(f"Error extracting audio: {str(e)}")
-        return None, None
+VIDEO_DB = "VIDEO_DB"
+AUDIO_DB = "AUDIO_DB"
+
+def callback(ch, method, properties, body):
+    print(f" [>] Received message: {body[:100]}...")
+    message = json.loads(body)
+    v_file_id = message.get("video_fid")
+    print(f" [>] Processing video file: {v_file_id}")
+    tf = tempfile.NamedTemporaryFile(delete=False)
+    video = download(v_file_id)
+    tf.write(video)
+
+    audio, vid = extract_audio_from_video(tf.name)
+    tf.close()
+    tf_path = tempfile.gettempdir() + f"/{v_file_id}.mp3"
+    audio.write_audiofile(tf_path)
+    audio.close()
+    vid.close()
+    
+
+    f = open(tf_path, "rb")
+    data = f.read()
+    msg = upload(data)
+    f.close()
+    print(f" [✓] Processing completed successfully {msg}")
+
+    ch.basic_ack(delivery_tag=method.delivery_tag)
 
 def main():
     """
     Main function that extracts audio from a video file.
-    Usage example:
-    
-    # Extract audio from a video and save to a specific folder
-    output = extract_audio_from_video("path/to/video.mp4", "path/to/output/folder", "wav")
-    print(f"Audio saved to: {output}")
-    
-    # Extract audio and save in the same folder as the video
-    output = extract_audio_from_video("path/to/video.mp4")
-    print(f"Audio saved to: {output}")
+
     """
+    
+    consume_messages(callback)
+    
     # Example usage
     video_path = "./assets/video/maza_aya.mp4"  # Replace with actual video path
     output_folder = "./assets/audio"  # Replace with desired output folder
