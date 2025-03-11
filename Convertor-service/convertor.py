@@ -13,8 +13,8 @@ def callback(ch, method, properties, body):
     v_file_id = message.get("video_fid")
     print(f" [>] Processing video file: {v_file_id}")
     tf = tempfile.NamedTemporaryFile(delete=False)
-    video = download(v_file_id)
-    tf.write(video)
+    video, status = download(v_file_id)
+    tf.write(video.read())
 
     audio, vid = extract_audio_from_video(tf.name)
     tf.close()
@@ -25,8 +25,7 @@ def callback(ch, method, properties, body):
     
 
     f = open(tf_path, "rb")
-    data = f.read()
-    msg = upload(data)
+    msg = upload(f)
     f.close()
     print(f" [✓] Processing completed successfully {msg}")
 
