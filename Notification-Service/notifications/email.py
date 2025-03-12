@@ -6,7 +6,7 @@ load_dotenv()
 
 def sendEmailNotification(message):
     message = json.loads(message)
-    mp3_fid = message["mp3_fid"]
+    mp3_fid = message["audio_fid"]
     sender_address = os.getenv("GMAIL_ADDRESS")
     sender_password = os.getenv("GMAIL_PASSWORD")
     receiver_address = 'rahulkesharwani353@gmail.com'

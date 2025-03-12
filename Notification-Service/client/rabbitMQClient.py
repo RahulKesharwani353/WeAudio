@@ -4,7 +4,7 @@ RABBITMQ_HOST = "localhost"
 RABBITMQ_PORT = 5672
 RABBITMQ_USER = "guest"  # Default username
 RABBITMQ_PASS = "guest"  # Default password
-QUEUE_NAME = "task_queue"
+QUEUE_NAME = "success_queue"
 
 def get_rabbitmq_connection():
     credentials = pika.PlainCredentials(RABBITMQ_USER, RABBITMQ_PASS)

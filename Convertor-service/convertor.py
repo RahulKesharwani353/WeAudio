@@ -3,6 +3,7 @@ from utils.audioConvertor import extract_audio_from_video
 from client.rabbitMQClient import consume_messages
 from utils.download import download
 from utils.upload import upload
+from client.rabbitMQClient import publish_message
 
 VIDEO_DB = "VIDEO_DB"
 AUDIO_DB = "AUDIO_DB"
@@ -25,9 +26,16 @@ def callback(ch, method, properties, body):
     
 
     f = open(tf_path, "rb")
-    msg = upload(f)
+    audio_fid = upload(f)
     f.close()
-    print(f" [✓] Processing completed successfully {msg}")
+    print(f" [✓] Processing completed successfully for Video {v_file_id}")
+    message = {
+        "audio_fid": str(audio_fid),
+        "video_fid": str(v_file_id),
+        "status": "success"
+    }
+
+    publish_message(message)
 
     ch.basic_ack(delivery_tag=method.delivery_tag)
 

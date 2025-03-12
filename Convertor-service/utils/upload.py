@@ -1,7 +1,4 @@
 from client.mongoClient import get_gridfs
-import io
-from datetime import datetime
-from client.rabbitMQClient import publish_message
 
 DB_NAME = "AUDIO_DB"
 def upload(f):
@@ -13,9 +10,6 @@ def upload(f):
         print(err)
         return "internal server error, fs level", 500
 
-    message = {
-        "video_fid": str(fid),
-        "mp3_fid": None
-    }
+    message = str(fid)
     
-    return message, 200
+    return message
