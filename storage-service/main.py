@@ -1,8 +1,10 @@
-from fastapi import Depends, FastAPI, Security, APIRouter, status, Depends, HTTPException, File, UploadFile
+from fastapi import Depends, FastAPI, Security, APIRouter, status, BackgroundTasks, HTTPException, File, UploadFile
 from fastapi.routing import APIRoute, jsonable_encoder
 from fastapi.security import HTTPBearer, OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.openapi.utils import get_openapi
-from utils import upload
+from utils import upload, download
+from fastapi.responses import FileResponse, StreamingResponse
+import tempfile, os
 
 from dotenv import load_dotenv
 load_dotenv()
@@ -43,15 +45,22 @@ async def upload_video(
     return response
 
 @router.get('/download/{file_id}')
-async def download_audio(file_id: str):
+async def download_audio(file_id: str, background_tasks: BackgroundTasks):
     """
     ## Download the converted audio file
     """
 
-    out = fs_mp3s.get(ObjectId(fid_string))
-    return send_file(out, download_name=f"{fid_string}.mp3")
+    file, status = await download.download(file_id)
+    if status != 200:
+        raise HTTPException(status_code=status, detail=file)
     
-    # return FileResponse(file_path, media_type='audio/mpeg', filename=f"{file_id}.mp3")
-    return {"message": "Download the audio file"}
+    async def file_streamer():
+        chunk = await file.read(1024 * 10)
+        while chunk:
+            yield chunk
+            chunk = await file.read(1024 * 10)
+    
+    headers = {"Content-Disposition": f"attachment; filename={file_id}.mp3"}
+    return StreamingResponse(file_streamer(), media_type='audio/mpeg', headers=headers)
 
 app.include_router(router)

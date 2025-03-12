@@ -6,7 +6,7 @@
 - [x] Upload  Service
 - [x] RMQ
 - [x] Notification Service
-- [ ] Download Service
+- [x] Download Service
 - [ ] GateWay Service
 - [ ] Frontend
 - [ ] Dockerize
