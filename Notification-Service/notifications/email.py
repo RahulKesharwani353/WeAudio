@@ -12,7 +12,7 @@ def sendEmailNotification(message):
     receiver_address = 'rahulkesharwani353@gmail.com'
 
     msg = EmailMessage()
-    msg.set_content(f"mp3 file_id: {mp3_fid} is now ready!")
+    msg.set_content(f"mp3 file_id: {mp3_fid} is now ready!\n\nDownload it from the link below:\n\nhttp://localhost:8000/file/download/{mp3_fid}")
     msg["Subject"] = "MP3 Download"
     msg["From"] = sender_address
     msg["To"] = receiver_address
